@@ -10,8 +10,13 @@ import java.util.function.DoubleSupplier;
 public class HorizontalSlideCommand extends CommandBase {
     private HorizontalSlideSubsystem slideSubsystem;
     private DoubleSupplier distance;
-    private static final int MOVESPEED = 5;
 
+    /**
+     * Extend the horizontal slides
+     *
+     * @param subsystem The subsystem to execute the command on
+     * @param distance The distance to extend the slides to in the range [0.0, 1.0]
+     */
     public HorizontalSlideCommand(HorizontalSlideSubsystem subsystem, DoubleSupplier distance) {
         slideSubsystem = subsystem;
         this.distance = distance;
@@ -19,6 +24,6 @@ public class HorizontalSlideCommand extends CommandBase {
 
     @Override
     public void execute() {
-        slideSubsystem.extend(distance.getAsDouble() * MOVESPEED);
+        slideSubsystem.extend(distance.getAsDouble());
     }
 }
