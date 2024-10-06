@@ -12,6 +12,12 @@ public class VerticalSlideSubsystem extends SubsystemBase {
         slide = new Motor(hmap, "verticalSlide", Motor.GoBILDA.BARE); //TODO: Change GoBILDA.BARE to something else with 6000rpm if it matters
     }
 
+    /**
+     * Extend the vertical slides
+     *
+     * @param target The target position of the slides
+     * @param setPosition Whether the position should be set or added to the current position. True = set, false = add
+     */
     public void extend(int target, boolean setPosition) {
         if(setPosition) {
             slide.setTargetPosition(target);

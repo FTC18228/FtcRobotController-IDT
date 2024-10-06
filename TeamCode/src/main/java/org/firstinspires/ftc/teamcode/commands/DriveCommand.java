@@ -12,6 +12,14 @@ public class DriveCommand extends CommandBase {
     private DoubleSupplier leftY;
     private DoubleSupplier rightX;
 
+    /**
+     * Update drive position
+     *
+     * @param driveSubsystem The subsystem to execute the command on
+     * @param leftx The x amount on the left joystick, or the value affecting horizontal movement
+     * @param lefty The y amount on the left joystick, or the value affecting vertical movement
+     * @param rightx The x amount on the right joystick, or the value affecting turning movement
+     */
     public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier leftx, DoubleSupplier lefty, DoubleSupplier rightx) {
         drive = driveSubsystem;
         this.leftX = leftx;

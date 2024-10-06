@@ -10,8 +10,14 @@ public class HorizontalSlideSubsystem extends SubsystemBase {
 
     public HorizontalSlideSubsystem(HardwareMap hmap) {
         leftSlide = hmap.get(Servo.class, "leftSlide");
-        leftSlide = hmap.get(Servo.class, "rightSlide");
+        rightSlide = hmap.get(Servo.class, "rightSlide");
     }
+
+    /**
+     * Extend the horizontal slides
+     *
+     * @param distance The distance to extend the slides to in the range [0.0, 1.0]
+     */
     public void extend(double distance) {
         leftSlide.setPosition(distance);
         rightSlide.setPosition(distance);
