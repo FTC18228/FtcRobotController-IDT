@@ -1,25 +1,25 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitUntilCommand;
-import com.arcrobotics.ftclib.drivebase.MecanumDrive;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.RobotMotors;
+import org.firstinspires.ftc.teamcode.commands.ClawCloseCommand;
+import org.firstinspires.ftc.teamcode.commands.ClawOpenCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.commands.HorizontalSlideCommand;
 import org.firstinspires.ftc.teamcode.commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.commands.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.commands.StopIntakeCommand;
+import org.firstinspires.ftc.teamcode.commands.TransferDownCommand;
+import org.firstinspires.ftc.teamcode.commands.TransferUpCommand;
 import org.firstinspires.ftc.teamcode.commands.VerticalSlideCommand;
+import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HorizontalSlideSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.TransferSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSlideSubsystem;
 
 @TeleOp(name = "18228 FTC", group = "FTC")
@@ -30,6 +30,8 @@ public class RedBotBuildersFTC extends CommandOpMode {
     HorizontalSlideSubsystem hSlideSubsystem;
     VerticalSlideSubsystem vSlideSubsystem;
     IntakeSubsystem intakeSubsystem;
+    TransferSubsystem transferSubsystem;
+    ClawSubsystem clawSubsystem;
 
     DriveCommand driveCommand;
     HorizontalSlideCommand hSlideCommand;
@@ -38,6 +40,10 @@ public class RedBotBuildersFTC extends CommandOpMode {
     IntakeCommand intakeCommand;
     StopIntakeCommand stopIntakeCommand;
     OuttakeCommand outtakeCommand;
+    TransferUpCommand transferUpCommand;
+    TransferDownCommand transferDownCommand;
+    ClawOpenCommand clawOpenCommand;
+    ClawCloseCommand clawCloseCommand;
     
 
     @Override
@@ -52,6 +58,8 @@ public class RedBotBuildersFTC extends CommandOpMode {
         hSlideSubsystem = new HorizontalSlideSubsystem(hardwareMap);
         vSlideSubsystem = new VerticalSlideSubsystem(hardwareMap);
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
+        transferSubsystem = new TransferSubsystem(hardwareMap);
+        clawSubsystem = new ClawSubsystem(hardwareMap);
 
         driveCommand = new DriveCommand(driveSubsystem, () -> gamepad1.left_stick_x, () -> gamepad1.left_stick_y, () -> gamepad1.right_stick_x);
         hSlideCommand = new HorizontalSlideCommand(hSlideSubsystem, () -> gamepad1.left_trigger);
@@ -60,6 +68,10 @@ public class RedBotBuildersFTC extends CommandOpMode {
         intakeCommand = new IntakeCommand(intakeSubsystem);
         stopIntakeCommand = new StopIntakeCommand(intakeSubsystem);
         outtakeCommand = new OuttakeCommand(intakeSubsystem);
+        transferUpCommand = new TransferUpCommand(transferSubsystem);
+        transferDownCommand = new TransferDownCommand(transferSubsystem);
+        clawOpenCommand = new ClawOpenCommand(clawSubsystem);
+        clawCloseCommand = new ClawCloseCommand(clawSubsystem);
 
         register(driveSubsystem);
         driveSubsystem.setDefaultCommand(driveCommand);
