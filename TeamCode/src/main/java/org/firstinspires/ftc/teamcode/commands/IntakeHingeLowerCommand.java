@@ -11,6 +11,7 @@ public class IntakeHingeLowerCommand extends CommandBase {
      * Lower the intake hinge
      * @param subsystem The hinge subsystem
      */
+    
     public IntakeHingeLowerCommand(IntakeHingeSubsytem subsystem) {
         hingeSubsytem = subsystem;
     }

@@ -12,6 +12,7 @@ public class IntakeHingeRaiseCommand extends CommandBase {
      * Raise the intake hinge
      * @param subsystem The hinge subsystem
      */
+
     public IntakeHingeRaiseCommand(IntakeHingeSubsytem subsystem) {
         hingeSubsytem = subsystem;
     }

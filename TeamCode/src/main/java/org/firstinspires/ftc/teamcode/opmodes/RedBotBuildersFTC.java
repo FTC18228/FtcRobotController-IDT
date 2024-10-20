@@ -76,7 +76,7 @@ public class RedBotBuildersFTC extends CommandOpMode {
             @Override
             public boolean getAsBoolean() {
                 return gamepad1.a;
-            } 
+            }
         }).whenActive(
                 new SequentialCommandGroup(
                         new ParallelCommandGroup(
