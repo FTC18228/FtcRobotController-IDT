@@ -16,14 +16,8 @@ public class VerticalSlideSubsystem extends SubsystemBase {
      * Extend the vertical slides
      *
      * @param target The target position of the slides
-     * @param setPosition Whether the position should be set or added to the current position. True = set, false = add
      */
-    public void extend(int target, boolean setPosition) {
-        if(setPosition) {
-            slide.setTargetPosition(target);
-        }
-        else {
-            slide.setTargetPosition(slide.getCurrentPosition() + target);
-        }
+    public void extend(int target) {
+        slide.setTargetPosition(target);
     }
 }
