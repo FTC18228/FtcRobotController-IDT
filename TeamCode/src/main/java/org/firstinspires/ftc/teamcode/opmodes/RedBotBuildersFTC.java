@@ -22,8 +22,12 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TransferSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSlideSubsystem;
 
+import java.util.function.DoubleSupplier;
+
 @TeleOp(name = "18228 FTC", group = "FTC")
 public class RedBotBuildersFTC extends CommandOpMode {
+    final double SPEED = 1;
+
     public RobotMotors robot;
 
     DriveSubsystem driveSubsystem;
@@ -52,16 +56,16 @@ public class RedBotBuildersFTC extends CommandOpMode {
         Motor frontRight = new Motor(hardwareMap, "frontLeft", Motor.GoBILDA.RPM_435);
         Motor backLeft = new Motor(hardwareMap, "frontLeft", Motor.GoBILDA.RPM_435);
         Motor backRight = new Motor(hardwareMap, "frontLeft", Motor.GoBILDA.RPM_435);
-        robot = new RobotMotors(frontLeft, frontRight, backLeft, backRight);
+        robot = new RobotMotors(hardwareMap);
 
-        driveSubsystem = new DriveSubsystem(hardwareMap, robot);
+        driveSubsystem = new DriveSubsystem(robot);
         hSlideSubsystem = new HorizontalSlideSubsystem(hardwareMap);
         vSlideSubsystem = new VerticalSlideSubsystem(hardwareMap);
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
         transferSubsystem = new TransferSubsystem(hardwareMap);
         clawSubsystem = new ClawSubsystem(hardwareMap);
 
-        driveCommand = new DriveCommand(driveSubsystem, () -> gamepad1.left_stick_x, () -> gamepad1.left_stick_y, () -> gamepad1.right_stick_x);
+        driveCommand = new DriveCommand(driveSubsystem, () -> gamepad1.left_stick_x, () -> gamepad1.left_stick_y, () -> gamepad1.right_stick_x, invertTrigger());
         hSlideCommand = new HorizontalSlideCommand(hSlideSubsystem, () -> gamepad1.left_trigger);
         vSlideCommandAdd = new VerticalSlideCommand(vSlideSubsystem, () -> Math.round(gamepad1.right_trigger * 100), false);
         vSlideCommandSet = new VerticalSlideCommand(vSlideSubsystem, () -> Math.round(gamepad1.right_trigger * 100), true);
@@ -76,14 +80,11 @@ public class RedBotBuildersFTC extends CommandOpMode {
         register(driveSubsystem);
         driveSubsystem.setDefaultCommand(driveCommand);
     }
-
-    public void runOpMode() throws InterruptedException {
-        initialize();
-
-        waitForStart();
-
-        while (!isStopRequested()) {
-
+    private DoubleSupplier invertTrigger() {
+        if(gamepad1.right_trigger == 0) {
+            return () -> 1 * SPEED;
         }
+        return () -> (1 - gamepad1.right_trigger) * SPEED;
     }
+
 }

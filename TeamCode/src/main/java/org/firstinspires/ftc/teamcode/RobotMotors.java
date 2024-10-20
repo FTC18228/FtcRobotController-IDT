@@ -14,26 +14,33 @@ package org.firstinspires.ftc.teamcode;
 import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.opencv.core.Mat;
 
 // create the class RobotMotors
 public class RobotMotors {
-    // define each motor as separate variable
-    public Motor lf;
-    public Motor rf;
-    public Motor lb;
-    public Motor rb;
     public MecanumDrive drive;
 
     // create the mecanum on instance creation
-    public RobotMotors(Motor leftFront, Motor rightFront, Motor leftBack, Motor rightBack) {
-        lf = leftFront;
-        lb = leftBack;
-        rf = rightFront;
-        rb = rightBack;
-        drive = drive = new MecanumDrive(lf, rf, lb, rb);
+    public RobotMotors(HardwareMap hmap) {
+        drive = drive = new MecanumDrive(hmap, new Pose2d(0, 0, 0));
+    }
+    public void drive(double leftX, double leftY, double rightX, double speed) {
+        Pose2d estimate = drive.pose;
+        double heading = drive.pose.heading.toDouble();
+        Vector2d controller = new Vector2d(leftY * speed, -leftX * speed);
+
+        double x = controller.x * Math.cos(-heading) - controller.y * Math.sin(heading);
+        double y = controller.x * Math.sin(heading) + controller.y * Math.cos(-heading);
+
+        Vector2d newPos = new Vector2d(x, y);
+        drive.setDrivePowers(new PoseVelocity2d(newPos, rightX * speed));
+        drive.updatePoseEstimate();
     }
 }
