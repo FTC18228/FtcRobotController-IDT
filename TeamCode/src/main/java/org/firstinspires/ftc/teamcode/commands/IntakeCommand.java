@@ -17,7 +17,21 @@ public class IntakeCommand extends CommandBase {
     }
 
     @Override
-    public void execute() {
+    public void execute(){
+        if(subsystem.IsSampleLoaded()){
+            subsystem.stop();
+        }
+    }
+
+    @Override
+    public void initialize() {
+
         subsystem.start();
     }
+
+    @Override
+    public boolean isFinished(){
+        return true;//subsystem.IsSampleLoaded();
+    }
+
 }

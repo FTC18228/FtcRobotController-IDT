@@ -14,10 +14,16 @@ public class OuttakeCommand extends CommandBase {
      */
     public OuttakeCommand(IntakeSubsystem subsystem) {
         this.subsystem = subsystem;
+        this.addRequirements(subsystem);
     }
 
     @Override
-    public void execute() {
+    public void initialize() {
         subsystem.reverse();
+    }
+
+    @Override
+    public boolean isFinished(){
+        return true;
     }
 }

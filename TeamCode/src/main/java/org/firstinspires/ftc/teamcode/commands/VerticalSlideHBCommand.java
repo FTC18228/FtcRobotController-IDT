@@ -4,38 +4,34 @@ import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSlideSubsystem;
 
-import java.util.function.IntSupplier;
-
-public class VerticalSlideCommand extends CommandBase {
+public class VerticalSlideHBCommand extends CommandBase {
     VerticalSlideSubsystem slideSubsystem;
-    int target;
-    boolean setPosition;
 
-    int ALLOWANCE = 50;
-
-    int HIGH_BASKET = 2500;
 
     /**
      * The subsystem to execute the command on
      *
      * @param subsystem The subsystem to execute the command on
-     * @param target The target position of the slides
+
      */
-    public VerticalSlideCommand(VerticalSlideSubsystem subsystem, int target) {
+    public VerticalSlideHBCommand(VerticalSlideSubsystem subsystem) {
         slideSubsystem = subsystem;
-        this.target = target;
+
+        addRequirements(subsystem);
+
     }
 
     @Override
     public void initialize() {
 
-        slideSubsystem.extend(target);
+        slideSubsystem.HighBasket();
     }
 
 
 
     @Override
     public boolean isFinished(){
-        return slideSubsystem.getPosition() > (this.target - ALLOWANCE);
+
+        return slideSubsystem.isAtHighBasket();
     }
 }

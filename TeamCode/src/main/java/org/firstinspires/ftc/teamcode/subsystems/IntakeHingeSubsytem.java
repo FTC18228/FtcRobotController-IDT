@@ -11,6 +11,13 @@ public class IntakeHingeSubsytem extends SubsystemBase {
     public IntakeHingeSubsytem(HardwareMap hmap) {
         left = hmap.get(Servo.class, "leftHinge");
         right = hmap.get(Servo.class, "rightHinge");
+
+        //This is reversed at the servo level
+        //it makes the servos spin at the same speed
+        //left.setDirection(Servo.Direction.REVERSE);
+
+        left.setPosition(0);
+        right.setPosition(0);
     }
 
     /**
@@ -18,7 +25,8 @@ public class IntakeHingeSubsytem extends SubsystemBase {
      * @param pos The position to move the hinge to
      */
     public void move(double pos) {
-        left.setPosition(pos);
         right.setPosition(pos);
+        left.setPosition(pos);
+
     }
 }

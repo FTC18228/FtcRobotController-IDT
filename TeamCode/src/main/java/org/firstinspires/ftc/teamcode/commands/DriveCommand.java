@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 
 import java.util.function.DoubleSupplier;
@@ -12,6 +13,7 @@ public class DriveCommand extends CommandBase {
     private DoubleSupplier leftY;
     private DoubleSupplier rightX;
     private DoubleSupplier speed;
+    private Telemetry tele;
 
     /**
      * Update drive position
@@ -33,6 +35,10 @@ public class DriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        drive.drive(leftX.getAsDouble(), leftY.getAsDouble(), rightX.getAsDouble(), speed.getAsDouble());
+        drive.drive(leftX.getAsDouble(), leftY.getAsDouble(), -rightX.getAsDouble(), speed.getAsDouble());
+        /*tele.addData("leftX", leftX.getAsDouble());
+        tele.addData("leftY", leftY.getAsDouble());
+        tele.addData("rightX", -rightX.getAsDouble());
+        tele.addData("speed", speed.getAsDouble());*/
     }
 }

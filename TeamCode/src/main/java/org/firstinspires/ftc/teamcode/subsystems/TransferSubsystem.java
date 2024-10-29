@@ -5,10 +5,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class TransferSubsystem extends SubsystemBase {
-    Servo transfer;
+    Servo leftSlide;
+    Servo rightSlide;
 
     public TransferSubsystem(HardwareMap hmap) {
-        transfer = hmap.get(Servo.class, "transfer");
+        leftSlide = hmap.get(Servo.class, "transferLeft");
+        rightSlide = hmap.get(Servo.class, "transferRight");
+
+        extend(0.02);
     }
 
     /**
@@ -17,6 +21,7 @@ public class TransferSubsystem extends SubsystemBase {
      * @param distance The distance to extend the slides to in the range [0.0, 1.0]
      */
     public void extend(double distance) {
-        transfer.setPosition(distance);
+        leftSlide.setPosition(distance);
+        rightSlide.setPosition(distance);
     }
 }

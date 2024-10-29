@@ -11,6 +11,9 @@ public class HorizontalSlideSubsystem extends SubsystemBase {
     public HorizontalSlideSubsystem(HardwareMap hmap) {
         leftSlide = hmap.get(Servo.class, "leftSlide");
         rightSlide = hmap.get(Servo.class, "rightSlide");
+
+
+        extend(80);
     }
 
     /**

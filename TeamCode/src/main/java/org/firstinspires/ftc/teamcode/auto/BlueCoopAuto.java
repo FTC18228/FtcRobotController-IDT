@@ -9,19 +9,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.auto.mechanisms.HorizontalSlides;
-import org.firstinspires.ftc.teamcode.auto.mechanisms.IntakeSystem;
-import org.firstinspires.ftc.teamcode.auto.mechanisms.VerticalSlides;
 
 @Config
 @Autonomous(name = "Blue Co-op Auto", group = "FTC")
 public class BlueCoopAuto extends LinearOpMode {
     Pose2d start = new Pose2d(-46, -70, Math.toRadians(90));
     MecanumDrive drive = new MecanumDrive(hardwareMap, start);
-
-    HorizontalSlides hslides = new HorizontalSlides(hardwareMap);
-    VerticalSlides vslides = new VerticalSlides(hardwareMap);
-    IntakeSystem intake = new IntakeSystem(hardwareMap);
 
     @Override
     public void runOpMode() throws InterruptedException {

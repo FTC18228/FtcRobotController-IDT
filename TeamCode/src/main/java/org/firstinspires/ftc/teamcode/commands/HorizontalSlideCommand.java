@@ -23,7 +23,12 @@ public class HorizontalSlideCommand extends CommandBase {
     }
 
     @Override
-    public void execute() {
+    public void initialize() {
         slideSubsystem.extend(distance);
+    }
+
+    @Override
+    public boolean isFinished(){
+        return true;
     }
 }

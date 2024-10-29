@@ -2,9 +2,12 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -21,6 +24,8 @@ import org.firstinspires.ftc.teamcode.commands.StopIntakeCommand;
 import org.firstinspires.ftc.teamcode.commands.TransferDownCommand;
 import org.firstinspires.ftc.teamcode.commands.TransferUpCommand;
 import org.firstinspires.ftc.teamcode.commands.VerticalSlideCommand;
+import org.firstinspires.ftc.teamcode.commands.VerticalSlideHBCommand;
+import org.firstinspires.ftc.teamcode.commands.VerticalSlideHomeCommand;
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.HorizontalSlideSubsystem;
@@ -36,7 +41,7 @@ import java.util.function.DoubleSupplier;
 public class RedBotBuildersFTC extends CommandOpMode {
     final double SPEED = 1;
     final int HSLIDEMAX = 100;
-    final int VSLIDEMAX = 100;
+    final int VSLIDEMAX = 2500;
 
     public RobotMotors robot;
 
@@ -53,102 +58,227 @@ public class RedBotBuildersFTC extends CommandOpMode {
 
     @Override
     public void initialize() {
-        Motor frontLeft = new Motor(hardwareMap, "frontLeft", Motor.GoBILDA.RPM_435);
-        Motor frontRight = new Motor(hardwareMap, "frontLeft", Motor.GoBILDA.RPM_435);
-        Motor backLeft = new Motor(hardwareMap, "frontLeft", Motor.GoBILDA.RPM_435);
-        Motor backRight = new Motor(hardwareMap, "frontLeft", Motor.GoBILDA.RPM_435);
         robot = new RobotMotors(hardwareMap);
+
+        GamepadEx driver = new GamepadEx(gamepad1);
+        GamepadEx operator = new GamepadEx(gamepad2);
 
         driveSubsystem = new DriveSubsystem(robot);
         hSlideSubsystem = new HorizontalSlideSubsystem(hardwareMap);
         vSlideSubsystem = new VerticalSlideSubsystem(hardwareMap);
-        intakeSubsystem = new IntakeSubsystem(hardwareMap);
+        intakeSubsystem = new IntakeSubsystem(hardwareMap, telemetry);
         transferSubsystem = new TransferSubsystem(hardwareMap);
         clawSubsystem = new ClawSubsystem(hardwareMap);
+        hingeSubsytem = new IntakeHingeSubsytem(hardwareMap);
 
-        driveCommand = new DriveCommand(driveSubsystem, () -> gamepad1.left_stick_x, () -> gamepad1.left_stick_y, () -> gamepad1.right_stick_x, invertTrigger());
+        driveCommand = new DriveCommand(driveSubsystem, driver::getLeftX, driver::getLeftY, driver::getRightX, invertTrigger());
 
         register(driveSubsystem);
         driveSubsystem.setDefaultCommand(driveCommand);
 
-        // Intake
+       /* schedule(new RunCommand(()->{
+            telemetry.addData("slide", vSlideSubsystem.getPosition());
+            telemetry.update();
+
+        }));*/
+
         new Trigger(new BooleanSupplier() {
             @Override
             public boolean getAsBoolean() {
-                return gamepad1.a;
+                return driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5;
             }
         }).whenActive(
                 new SequentialCommandGroup(
-                        new ParallelCommandGroup(
-                                new HorizontalSlideCommand(hSlideSubsystem, HSLIDEMAX),
-                                new IntakeHingeLowerCommand(hingeSubsytem)
-                        ),
-                        new IntakeCommand(intakeSubsystem),
-                        new WaitCommand(500),
-                        new StopIntakeCommand(intakeSubsystem),
-                        new ParallelCommandGroup(
-                                new HorizontalSlideCommand(hSlideSubsystem, 0),
-                                new IntakeHingeRaiseCommand(hingeSubsytem)
-                        )
+                    new HorizontalSlideCommand(hSlideSubsystem, 0),
+                    new ClawOpenCommand(clawSubsystem),
+                    new WaitCommand(300),
+                    new IntakeHingeLowerCommand(hingeSubsytem)
+                )
+        );
+        new Trigger(new BooleanSupplier() {
+            @Override
+            public boolean getAsBoolean() {
+                return driver.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5;
+            }
+        }).whenActive(
+                new SequentialCommandGroup(
+                        new IntakeHingeRaiseCommand(hingeSubsytem),
+                        new WaitCommand(200),
+                        new HorizontalSlideCommand(hSlideSubsystem, HSLIDEMAX)
+
+                )
+        );
+
+        new Trigger(new BooleanSupplier() {
+            @Override
+            public boolean getAsBoolean() {
+                return operator.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5;
+            }
+        }).whenActive(
+                new SequentialCommandGroup(
+                        new HorizontalSlideCommand(hSlideSubsystem, 0),
+                        new ClawOpenCommand(clawSubsystem),
+                        new WaitCommand(300),
+                        new IntakeHingeLowerCommand(hingeSubsytem)
+                )
+        );
+        new Trigger(new BooleanSupplier() {
+            @Override
+            public boolean getAsBoolean() {
+                return operator.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5;
+            }
+        }).whenActive(
+                new SequentialCommandGroup(
+                        new IntakeHingeRaiseCommand(hingeSubsytem),
+                        new WaitCommand(200),
+                        new HorizontalSlideCommand(hSlideSubsystem, HSLIDEMAX)
+
+                )
+        );
+
+        // Intake
+        driver.getGamepadButton(GamepadKeys.Button.A).whenActive(
+                new SequentialCommandGroup(
+
+                        new IntakeCommand(intakeSubsystem)
+
+                )
+        ).whenInactive(
+                new SequentialCommandGroup(
+                    new StopIntakeCommand(intakeSubsystem)
+                )
+        );
+
+        driver.getGamepadButton(GamepadKeys.Button.B).whenActive(
+                new SequentialCommandGroup(
+
+                        new OuttakeCommand(intakeSubsystem)
+
+                )
+        ).whenInactive(
+                new StopIntakeCommand(intakeSubsystem)
+        );
+
+        driver.getGamepadButton(GamepadKeys.Button.X).whenActive(
+                new SequentialCommandGroup(
+                        new TransferUpCommand(transferSubsystem)
+
+                )
+        ).whenInactive(
+                new TransferDownCommand(transferSubsystem)
+        );
+
+        driver.getGamepadButton(GamepadKeys.Button.Y).toggleWhenPressed(
+                new SequentialCommandGroup(
+
+                        new ClawCloseCommand(clawSubsystem),
+                        new WaitCommand(450),
+                        new IntakeHingeLowerCommand(hingeSubsytem)
+
+                ),
+                new SequentialCommandGroup(
+
+                        new ClawOpenCommand(clawSubsystem),
+                        new WaitCommand(450),
+                        new IntakeHingeRaiseCommand(hingeSubsytem)
+
+                )
+        );
+
+        operator.getGamepadButton(GamepadKeys.Button.A).whenActive(
+                new SequentialCommandGroup(
+
+                        new IntakeCommand(intakeSubsystem)
+
+                )
+        ).whenInactive(
+                new SequentialCommandGroup(
+                        new StopIntakeCommand(intakeSubsystem)
+                )
+        );
+
+        operator.getGamepadButton(GamepadKeys.Button.B).whenActive(
+                new SequentialCommandGroup(
+
+                        new OuttakeCommand(intakeSubsystem)
+
+                )
+        ).whenInactive(
+                new StopIntakeCommand(intakeSubsystem)
+        );
+
+        operator.getGamepadButton(GamepadKeys.Button.X).whenActive(
+                new SequentialCommandGroup(
+                        new TransferUpCommand(transferSubsystem)
+
+                )
+        ).whenInactive(
+                new TransferDownCommand(transferSubsystem)
+        );
+
+        operator.getGamepadButton(GamepadKeys.Button.Y).toggleWhenPressed(
+                new SequentialCommandGroup(
+
+                        new ClawCloseCommand(clawSubsystem),
+                        new WaitCommand(450),
+                        new IntakeHingeLowerCommand(hingeSubsytem)
+
+                ),
+                new SequentialCommandGroup(
+
+                        new ClawOpenCommand(clawSubsystem),
+                        new WaitCommand(450),
+                        new IntakeHingeRaiseCommand(hingeSubsytem)
+
                 )
         );
 
         // Specimen
-        new Trigger(new BooleanSupplier() {
-            @Override
-            public boolean getAsBoolean() {
-                return gamepad1.left_bumper;
-            }
-        }).whenActive(
+        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenActive(
                 new SequentialCommandGroup(
-                        new ParallelCommandGroup(
-                                new VerticalSlideCommand(vSlideSubsystem, VSLIDEMAX),
-                                new TransferDownCommand(transferSubsystem)
-                        ),
-                        new ClawCloseCommand(clawSubsystem),
-                        new ParallelCommandGroup(
-                                new VerticalSlideCommand(vSlideSubsystem, VSLIDEMAX),
-                                new SequentialCommandGroup(
-                                        new WaitCommand(500),
-                                        new TransferUpCommand(transferSubsystem)
-                                )
-                        ),
-                        new VerticalSlideCommand(vSlideSubsystem, 100), //TODO: Figure this height out
                         new ClawOpenCommand(clawSubsystem),
+                        new WaitCommand(250),
                         new ParallelCommandGroup(
                                 new TransferDownCommand(transferSubsystem),
-                                new SequentialCommandGroup(
-                                        new WaitCommand(500),
-                                        new VerticalSlideCommand(vSlideSubsystem, 0)
-                                )
+                                new VerticalSlideHomeCommand(vSlideSubsystem)
                         )
                 )
         );
 
         // Sample
-        new Trigger(new BooleanSupplier() {
-            @Override
-            public boolean getAsBoolean() {
-                return gamepad1.right_bumper;
-            }
-        }).whenActive(
+        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenActive(
                 new SequentialCommandGroup(
                         new ClawCloseCommand(clawSubsystem),
                         new ParallelCommandGroup(
-                                new VerticalSlideCommand(vSlideSubsystem, VSLIDEMAX),
-                                new SequentialCommandGroup(
-                                        new WaitCommand(500),
-                                        new TransferUpCommand(transferSubsystem)
-                                )
-                        ),
+                                new VerticalSlideHBCommand(vSlideSubsystem),
+                                new TransferUpCommand(transferSubsystem)
+
+                        )
+
+                )
+        );
+
+        operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenActive(
+                new SequentialCommandGroup(
                         new ClawOpenCommand(clawSubsystem),
+                        new WaitCommand(250),
                         new ParallelCommandGroup(
                                 new TransferDownCommand(transferSubsystem),
-                                new SequentialCommandGroup(
-                                        new WaitCommand(500),
-                                        new VerticalSlideCommand(vSlideSubsystem, 0)
-                                )
+                                new VerticalSlideHomeCommand(vSlideSubsystem)
                         )
+                )
+        );
+
+        // Sample
+        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenActive(
+                new SequentialCommandGroup(
+                        new ClawCloseCommand(clawSubsystem),
+                        new ParallelCommandGroup(
+                                new VerticalSlideHBCommand(vSlideSubsystem),
+                                new TransferUpCommand(transferSubsystem)
+
+                        )
+
                 )
         );
 
@@ -166,12 +296,21 @@ public class RedBotBuildersFTC extends CommandOpMode {
         // https://youtu.be/gy6nh_1mA18?si=iQktB4GEbSwi5Crf&t=897
         // That type
 
-        new Trigger(new BooleanSupplier() {
-            @Override
-            public boolean getAsBoolean() {
-                return gamepad1.dpad_up;
-            }
-        }).whenActive(
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenActive(
+                new SequentialCommandGroup(
+                        new ClawOpenCommand(clawSubsystem),
+                        new ParallelCommandGroup(
+                                new VerticalSlideCommand(vSlideSubsystem, 100), //TODO: Figure this out
+                                new SequentialCommandGroup(
+                                        new WaitCommand(500),
+                                        new TransferUpCommand(transferSubsystem)
+                                )
+                        ),
+                        new ClawCloseCommand(clawSubsystem),
+                        new VerticalSlideCommand(vSlideSubsystem, 0)
+                )
+        );
+        operator.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenActive(
                 new SequentialCommandGroup(
                         new ClawOpenCommand(clawSubsystem),
                         new ParallelCommandGroup(

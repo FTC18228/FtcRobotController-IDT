@@ -18,7 +18,12 @@ public class IntakeHingeRaiseCommand extends CommandBase {
     }
 
     @Override
-    public void execute() {
-        hingeSubsytem.move(1);
+    public void initialize() {
+        hingeSubsytem.move(0);
+    }
+
+    @Override
+    public boolean isFinished(){
+        return true;
     }
 }

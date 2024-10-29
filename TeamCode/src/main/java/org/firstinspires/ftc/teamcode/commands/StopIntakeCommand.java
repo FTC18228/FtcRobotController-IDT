@@ -14,10 +14,16 @@ public class StopIntakeCommand extends CommandBase {
      */
     public StopIntakeCommand(IntakeSubsystem subsystem) {
         this.subsystem = subsystem;
+        this.addRequirements(subsystem);
     }
 
     @Override
-    public void execute() {
+    public void initialize() {
         subsystem.stop();
+    }
+
+    @Override
+    public boolean isFinished(){
+        return true;
     }
 }

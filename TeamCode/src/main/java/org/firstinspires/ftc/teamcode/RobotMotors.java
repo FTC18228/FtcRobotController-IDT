@@ -32,15 +32,25 @@ public class RobotMotors {
         drive = drive = new MecanumDrive(hmap, new Pose2d(0, 0, 0));
     }
     public void drive(double leftX, double leftY, double rightX, double speed) {
-        Pose2d estimate = drive.pose;
+        Pose2d poseEstimate = drive.pose;
         double heading = drive.pose.heading.toDouble();
-        Vector2d controller = new Vector2d(leftY * speed, -leftX * speed);
 
-        double x = controller.x * Math.cos(-heading) - controller.y * Math.sin(heading);
-        double y = controller.x * Math.sin(heading) + controller.y * Math.cos(-heading);
+        Vector2d sticks = new Vector2d(
+                leftY * speed,
+                -leftX * speed
+        );
 
-        Vector2d newPos = new Vector2d(x, y);
-        drive.setDrivePowers(new PoseVelocity2d(newPos, rightX * speed));
+        double rotX = sticks.x * Math.cos(-heading) - sticks.y * Math.sin(-heading);
+        double rotY = sticks.x * Math.sin(-heading) + sticks.y * Math.cos(-heading);
+
+        Vector2d updatedVector = new Vector2d(rotX, rotY);
+
+        drive.setDrivePowers(new PoseVelocity2d(
+                updatedVector,
+                -rightX
+        ));
+
+
         drive.updatePoseEstimate();
     }
 }

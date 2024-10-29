@@ -17,7 +17,12 @@ public class TransferDownCommand extends CommandBase {
     }
 
     @Override
-    public void execute() {
+    public void initialize() {
         transferSubsystem.extend(0);
+    }
+
+    @Override
+    public boolean isFinished(){
+        return true;
     }
 }
