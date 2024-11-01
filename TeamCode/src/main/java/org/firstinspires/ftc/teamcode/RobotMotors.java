@@ -17,21 +17,27 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.opmodes.RedBotBuildersFTC;
 import org.opencv.core.Mat;
 
 // create the class RobotMotors
 public class RobotMotors {
     public MecanumDrive drive;
+    public double speed = 1;
 
     // create the mecanum on instance creation
     public RobotMotors(HardwareMap hmap) {
         drive = drive = new MecanumDrive(hmap, new Pose2d(0, 0, 0));
     }
-    public void drive(double leftX, double leftY, double rightX, double speed) {
+    public void drive(double leftX, double leftY, double rightX, Gamepad gamepad) {
+        resetOrientation(gamepad);
+
         Pose2d poseEstimate = drive.pose;
         double heading = drive.pose.heading.toDouble();
 
@@ -52,5 +58,10 @@ public class RobotMotors {
 
 
         drive.updatePoseEstimate();
+    }
+    public void resetOrientation(Gamepad gamepad) {
+        if(gamepad.a) {
+            drive.pose = new Pose2d(new Vector2d(0, 0), 0);
+        }
     }
 }
