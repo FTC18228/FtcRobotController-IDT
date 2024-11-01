@@ -26,6 +26,6 @@ public class VerticalSlideHomeCommand extends CommandBase {
 
     @Override
     public boolean isFinished(){
-        return slideSubsystem.getPosition() < 0;
+        return slideSubsystem.getPosition() <= 150;
     }
 }
