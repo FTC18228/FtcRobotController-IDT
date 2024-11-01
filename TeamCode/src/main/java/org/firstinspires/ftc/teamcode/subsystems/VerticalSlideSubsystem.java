@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class VerticalSlideSubsystem extends SubsystemBase {
     DcMotor slide;
 
-    int HIGH_BASKET = 3150;
+    int HIGH_BASKET = 3200;
 
     public VerticalSlideSubsystem(HardwareMap hmap) {
         slide = hmap.get(DcMotor.class, "verticalSlide");
@@ -34,10 +34,16 @@ public class VerticalSlideSubsystem extends SubsystemBase {
         return slide.getCurrentPosition();
     }
 
-    public void HighBasket(){
+    public void HighBasket() {
         extend(HIGH_BASKET);
     }
-    public boolean isAtHighBasket(){
-        return slide.getCurrentPosition() >= HIGH_BASKET;
+    public void AscentLevel() {
+        extend(HIGH_BASKET / 2);
+    }
+    public boolean isAtHighBasket() {
+        return slide.getCurrentPosition() >= (HIGH_BASKET - 150);
+    }
+    public boolean isAtHalf(){
+        return slide.getCurrentPosition() >= ((HIGH_BASKET / 2) - 150);
     }
 }
