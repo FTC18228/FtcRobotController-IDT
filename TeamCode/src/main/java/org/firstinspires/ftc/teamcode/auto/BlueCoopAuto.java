@@ -13,6 +13,7 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
@@ -36,6 +37,7 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSlideSubsystem;
 
 @Config
 @Autonomous(name = "Blue Co-op Auto", group = "FTC")
+@Disabled
 public class BlueCoopAuto extends CommandOpMode {
     Pose2d start = new Pose2d(-46, -70, Math.toRadians(90));
     MecanumDrive drive = new MecanumDrive(hardwareMap, start);
