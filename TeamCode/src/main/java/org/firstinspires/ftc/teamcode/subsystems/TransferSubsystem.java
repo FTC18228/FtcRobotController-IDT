@@ -12,7 +12,7 @@ public class TransferSubsystem extends SubsystemBase {
         leftSlide = hmap.get(Servo.class, "transferLeft");
         rightSlide = hmap.get(Servo.class, "transferRight");
 
-        extend(0.02);
+        extend(0);
     }
 
     /**
