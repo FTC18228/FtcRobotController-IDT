@@ -37,6 +37,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
+
 
 /*
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -55,19 +57,19 @@ import com.qualcomm.robotcore.util.Range;
 @Disabled
 public class TestOpMode extends LinearOpMode {
 
-    CRServo right;
+    ClawSubsystem clawSubsystem;
 
     @Override
     public void runOpMode() {
 
-        right = hardwareMap.get(CRServo.class, "intakeRight");
+        clawSubsystem = new ClawSubsystem(hardwareMap);
         // Wait for the game to start (driver presses START)
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            right.setPower(1);
+
         }
     }
 }
