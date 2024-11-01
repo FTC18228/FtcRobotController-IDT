@@ -38,7 +38,8 @@ public class IntakeSubsystem extends SubsystemBase {
      * Move the intake forwards
      */
     public void start() {
-        if(IsSampleLoaded()){
+        //TODO: Make this work(nationals)
+        /*if(IsSampleLoaded()){
             telemetry.addData("start", "Not Loaded");
             telemetry.update();
             stop();
@@ -46,8 +47,10 @@ public class IntakeSubsystem extends SubsystemBase {
             right.setPower(1);
             left.setPower(1);
             middle.setPower(1);
-        }
-
+        }*/
+        right.setPower(1);
+        left.setPower(1);
+        middle.setPower(1);
     }
 
     /**
@@ -75,10 +78,12 @@ public class IntakeSubsystem extends SubsystemBase {
         NormalizedRGBA colors = colourSensor.getNormalizedColors();
         Color.colorToHSV(colors.toColor(), hsvValues);
 
-        telemetry.addData("HSV", hsvValues[0]);
+        telemetry.addData("H", hsvValues[0]);
+        telemetry.addData("S", hsvValues[1]);
+        telemetry.addData("V", hsvValues[2]);
         telemetry.update();
 
-        if(hsvValues[0] >= 170 && hsvValues[0] <= 190){
+        if(hsvValues[0] >= 110 && hsvValues[0] <= 140){
             //this is the default reflection from the 3D print
             return false;
         }
