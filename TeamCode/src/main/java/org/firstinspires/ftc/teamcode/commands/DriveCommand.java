@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
@@ -12,7 +13,6 @@ public class DriveCommand extends CommandBase {
     private DoubleSupplier leftX;
     private DoubleSupplier leftY;
     private DoubleSupplier rightX;
-    private DoubleSupplier speed;
     private Telemetry tele;
 
     /**
@@ -22,20 +22,18 @@ public class DriveCommand extends CommandBase {
      * @param leftx The x amount on the left joystick, or the value affecting horizontal movement
      * @param lefty The y amount on the left joystick, or the value affecting vertical movement
      * @param rightx The x amount on the right joystick, or the value affecting turning movement
-     * @param speed The speed multiplier
      */
-    public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier leftx, DoubleSupplier lefty, DoubleSupplier rightx, DoubleSupplier speed) {
+    public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier leftx, DoubleSupplier lefty, DoubleSupplier rightx) {
         drive = driveSubsystem;
         this.leftX = leftx;
         this.leftY = lefty;
         this.rightX = rightx;
-        this.speed = speed;
         addRequirements(drive);
     }
 
     @Override
     public void execute() {
-        drive.drive(leftX.getAsDouble(), leftY.getAsDouble(), -rightX.getAsDouble(), speed.getAsDouble());
+        drive.drive(leftX.getAsDouble(), leftY.getAsDouble(), rightX.getAsDouble());
         /*tele.addData("leftX", leftX.getAsDouble());
         tele.addData("leftY", leftY.getAsDouble());
         tele.addData("rightX", -rightX.getAsDouble());
