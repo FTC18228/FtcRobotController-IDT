@@ -18,7 +18,7 @@ public class ClawOpenCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        clawSubsystem.extend(0.6);
+        clawSubsystem.extend(0.5);
     }
 
 

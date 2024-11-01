@@ -18,7 +18,7 @@ public class ClawCloseCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        clawSubsystem.extend(0.95);
+        clawSubsystem.extend(1);
     }
 
 
